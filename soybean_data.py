@@ -31,10 +31,9 @@ data_dict['month'] = month_array
 data_dict['sold'] = sold_array
 weed_df = pd.DataFrame(data_dict)
 
+st.write("Full data frame")
 st.write(weed_df)
-st.write(weed_df.groupby(['month']).sum())
 
-# weed_df['year_month'] = str(weed_df['year']) + weed_df['month']
 # weed_df['year_month'] = weed_df.apply(lambda row: str(row['year']) + row['month'], axis=1)
 
 year_month = []
@@ -68,15 +67,26 @@ for index, row in weed_df.iterrows():
         print(row.month)
 weed_df['year_month'] = year_month
 
+st.write("Updated dataframe")
+st.write(weed_df)
+
+# df = pd.DataFrame(np.random.randn(200, 3), columns=['a', 'b', 'c'])
+
+st.vega_lite_chart(weed_df, {
+    'mark': 'circle',
+    'encoding': {
+        'x': {"field": "year_month", "type": "temporal"},
+        'y': {"aggregate":"mean", "field": "sold", "type": "quantitative"},
+        },
+    })
+
 bar_df = pd.DataFrame(weed_df[['region','sold']])
 
-# bar_df.plot.bar()
-# plot.show()
+st.write("Chart of sold")
 st.bar_chart(bar_df)
-st.write(bar_df)
 
-st.title("Streamlit app about Weed")
-option = st.sidebar.multiselect(
+st.title("This one you can filter stuff with")
+option = st.multiselect(
     "Select a region",
     np.unique(weed_df['region'])
 )
